@@ -1,0 +1,52 @@
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /^v\d{2}\.\d{2}\.\d+$/
+      - publish:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d{2}\.\d{2}\.\d+$/
+
+version: 2
+jobs:
+  build:
+    docker:
+      - image: cibuilds/chrome-extension:latest
+    steps:
+      - checkout
+      - run:
+          name: "Prepare Extension For Production"
+          command: |
+            if [[ $CIRCLE_TAG != "" ]];then
+              jq '.version = env.CIRCLE_TAG' manifest.json | sponge manifest.json
+            fi
+      - run:
+          name: "Filler - Proper CI/CD needs to be implemented."
+          command: echo "The start of our build process."
+      - run:
+          name: "Package Extension"
+          command: git archive -o hugo-extension.zip HEAD
+      - persist_to_workspace:
+          root: /root/project
+          paths:
+            - hugo-extension.zip
+
+  publish:
+    docker:
+      - image: cibuilds/chrome-extension:latest
+    environment:
+      - APP_ID: edmkpfdmophaaeedepooedlhioimljai
+    steps:
+      - attach_workspace:
+          at: /root/workspace
+      - run:
+          name: "Publish to the Google Chrome Store"
+          command: publish /root/workspace/hugo-extension.zip
