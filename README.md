@@ -6,7 +6,7 @@ Right now, the basic features allow you to see when a website you're visiting ha
 
 ## Installing
 
-This extension can be installed via the [Chrome Store]().
+This extension can be installed via the [Chrome Store](https://chrome.google.com/webstore/detail/hugo-the-extension-you-re/hbaembbfbmpbjgkgcjcfonnimlekbfea/).
 
 
 ## Features
